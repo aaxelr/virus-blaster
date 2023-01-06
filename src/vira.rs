@@ -73,6 +73,24 @@ impl Vira {
         }
         false
     }
+    pub fn all_killed(&self) -> bool {
+        self.army.is_empty()
+    }
+    pub fn reached_bottom(&self) -> bool {
+        self.army.iter().map(|virus| virus.y).max().unwrap_or(0) >= NUM_ROWS - 1
+    }
+    pub fn kill_virus_at(&mut self, x: usize, y: usize) -> bool {
+        if let Some(i) = self
+            .army
+            .iter()
+            .position(|virus| (virus.x == x) && (virus.y == y))
+        {
+            self.army.remove(i);
+            true
+        } else {
+            false
+        }
+    }
 }
 
 impl Drawable for Vira {
