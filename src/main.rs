@@ -5,7 +5,7 @@ use crossterm::{
     ExecutableCommand,
 };
 use rusty_audio::Audio;
-use std::{error::Error, io, sync::mpsc, thread, time::Duration};
+use std::{error::Error, io, sync::mpsc, thread, time::{Duration, Instant}};
 use virus_blaster::{
     frame::{self, new_frame, Drawable},
     render, player::Player,
@@ -45,8 +45,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Game loop
     let mut player = Player::new();
+    let mut instant = Instant::now();
     'gameloop: loop {
         // Per-frame initialization
+        let delta = instant.elapsed();
+        instant = Instant::now();
         let mut current_frame = new_frame();
 
         // Input
@@ -55,6 +58,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                 match key_event.code {
                     KeyCode::Left => player.move_left(),
                     KeyCode::Right => player.move_right(),
+                    KeyCode::Char(' ') => {
+                        if player.shoot() {
+                            audio.play("pew");
+                        }
+                    },
                     KeyCode::Esc | KeyCode::Char('q') => {
                         audio.play("lose");
                         break 'gameloop;
@@ -63,6 +71,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
             }
         }
+
+        // Updates
+        player.update(delta);
 
         // Draw and render
         player.draw(&mut current_frame);
