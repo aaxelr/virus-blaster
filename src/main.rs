@@ -5,10 +5,18 @@ use crossterm::{
     ExecutableCommand,
 };
 use rusty_audio::Audio;
-use std::{error::Error, io, sync::mpsc, thread, time::{Duration, Instant}};
+use std::{
+    error::Error,
+    io,
+    sync::mpsc,
+    thread,
+    time::{Duration, Instant},
+};
 use virus_blaster::{
     frame::{self, new_frame, Drawable},
-    render, player::Player,
+    player::Player,
+    render,
+    vira::Vira,
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -46,6 +54,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Game loop
     let mut player = Player::new();
     let mut instant = Instant::now();
+    let mut vira = Vira::new();
     'gameloop: loop {
         // Per-frame initialization
         let delta = instant.elapsed();
@@ -62,7 +71,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         if player.shoot() {
                             audio.play("pew");
                         }
-                    },
+                    }
                     KeyCode::Esc | KeyCode::Char('q') => {
                         audio.play("lose");
                         break 'gameloop;
@@ -74,9 +83,18 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // Updates
         player.update(delta);
+        if vira.update(delta) {
+            audio.play("move");
+        }
 
         // Draw and render
-        player.draw(&mut current_frame);
+        // player.draw(&mut current_frame);
+        // vira.draw(&mut current_frame);
+        // use generics instead:
+        let drawables: Vec<&dyn Drawable> = vec![&player, &vira];
+        for drawable in drawables {
+            drawable.draw(&mut current_frame);
+        }
         let _ = render_sender.send(current_frame);
         thread::sleep(Duration::from_millis(1));
     }
