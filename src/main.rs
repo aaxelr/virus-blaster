@@ -86,6 +86,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         if vira.update(delta) {
             audio.play("move");
         }
+        if player.detect_hits(&mut vira) {
+            audio.play("explode");
+        }
 
         // Draw and render
         // player.draw(&mut current_frame);
@@ -97,6 +100,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         let _ = render_sender.send(current_frame);
         thread::sleep(Duration::from_millis(1));
+    
+        // Win and lose conditions
+        if vira.all_killed() {
+            audio.play("win");
+            break 'gameloop;
+        }
+        if vira.reached_bottom() {
+            audio.play("lose");
+            break 'gameloop;
+        }
     }
 
     // Clean up:
