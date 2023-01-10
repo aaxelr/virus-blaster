@@ -4,6 +4,8 @@ Basic Space Invaders like game that runs in the terminal.
 
 Built as a part of Nathan Stocks' [Ultimate Rust Crash Course](https://www.udemy.com/course/ultimate-rust-crash-course/).
 
+The sound effects are made with [Elektron Monomachine](https://www.elektron.se/se/monomachine)'s SID synth engine.
+
 
 ## Running the game
 Run the game by cloning the repository, `cd` into the directory and run:
