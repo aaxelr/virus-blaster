@@ -8,17 +8,17 @@ Built as a part of Nathan Stocks' [Ultimate Rust Crash Course](https://www.udemy
 ## Running the game
 Run the game by cloning the repository, `cd` into the directory and run:
 ```shell
-> cargo run
+cargo run
 ```
 You can also build an executable and run it:
 ```shell
-> cargo build
-> target/debug/virus_blaster
+cargo build
+target/debug/virus_blaster
 ```
 To build an optimised executable, add the `--release` flag and run the release version:
 ```shell
-> cargo build --release
-> target/release/virus_blaster
+cargo build --release
+target/release/virus_blaster
 ```
 
 ## How To Play
